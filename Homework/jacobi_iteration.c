@@ -94,7 +94,7 @@ bool equal(double *roots, double *prev, int count)
     int i;
 
     for (i = 0; i < count; i++) {
-        if (diff(roots[i], prev[i]) > 1e-9) {
+        if (diff(roots[i], prev[i]) > 1e-5) {
             return false;
         }
     }
