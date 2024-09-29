@@ -3,11 +3,12 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <math.h>
 
-void get_nums(char *s, int count, int *arr, int len)
+void get_nums(char *s, int count, double *arr, int len)
 {
     int *sign = (int *) malloc(sizeof(int) * count);
-    int i = 0, j = 0, k;
+    int i = 0, j = 0, k, is_dot = 0, dot = 0;
 
     // Initialize the arrays
     for (k = 0; k < count; k++) {
@@ -17,6 +18,9 @@ void get_nums(char *s, int count, int *arr, int len)
 
     // Get the coefficients
     for (k = 0; k < count - 1; k++, j++) {
+        is_dot = 0;
+        dot = 0;
+
         if (s[i] == '-') {
             sign[j] = -1;
 
@@ -36,11 +40,24 @@ void get_nums(char *s, int count, int *arr, int len)
             i++;
         }
         else {
-            while (isdigit(s[i])) {
+            while (isdigit(s[i]) || s[i] == '.') {
+                if (s[i] == '.') {
+                    i++;
+                    is_dot = 1;
+
+                    continue;
+                }
+
+                if (is_dot) {
+                    dot++;
+                }
+
                 arr[j] *= 10;
                 arr[j] += s[i] - '0';
                 i++;
             }
+
+            arr[j] /= pow(10, dot);
         }
 
         while (i < len && (s[i] != '+' && s[i] != '-' && s[i] != '=')) {
@@ -126,7 +143,7 @@ int main()
 {
     char s[100];
     int row, column;
-    int **arr;
+    double **arr;
     double *roots;
     double *temps;
     double *prev;
@@ -135,7 +152,7 @@ int main()
     puts("Enter number of variables: ");
     scanf("%d ", &row);
 
-    arr = (int **) malloc(sizeof(int *) * row);
+    arr = (double **) malloc(sizeof(double *) * row);
     roots = (double *) calloc(row, sizeof(double));
     temps = (double *) calloc(row, sizeof(double));
     prev = (double *) calloc(row, sizeof(double));
@@ -143,7 +160,7 @@ int main()
     column = row + 1;
 
     for (i = 0; i < row; i++) {
-        arr[i] = (int *) malloc(sizeof(int) * column);
+        arr[i] = (double *) malloc(sizeof(double) * column);
     }
 
 
@@ -157,13 +174,13 @@ int main()
 
     for (i = 0; i < row; i++) {
         for (int j = 0; j < column; j++) {
-            printf("%d ", arr[i][j]);
+            printf("%0.4lf ", arr[i][j]);
         }
 
         printf("\n");
     }
 
-    for (int it = 0; ; it++) {
+    for (int it = 0; it < 500; it++) {
         for (i = 0; i < row; i++) {
             temps[i] = 1.0 * arr[i][column - 1];
 
