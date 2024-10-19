@@ -8,6 +8,35 @@
 void get_nums(char *s, int count, double *arr, int len);
 void basic_gauss_elimination(double **arr, double *roots, int row, int column);
 void print_arr(double **arr, int row, int column);
+void print_roots(double *roots, int count);
+void sort(double ***arr, int row, int column);
+int is_ready(double **arr, int row, int column);
+int compare(const void *a, const void *b);
+
+typedef struct item {
+    int var_count;
+    int index;
+} item;
+
+int compare(const void *a, const void *b) {
+    item *A = (item *) a;
+    item *B = (item *) b;
+
+    if (B->var_count > A->var_count) {
+        return 1;
+    }
+    else if (B->var_count == A->var_count) {
+        if (B->index < A->index) {
+            return 1;
+        }
+        else {
+            return -1;
+        }
+    }
+    else {
+        return -1;
+    }
+}
 
 void get_nums(char *s, int count, double *arr, int len)
 {
@@ -31,7 +60,7 @@ void get_nums(char *s, int count, double *arr, int len)
             i++;
         }
 
-        if (k > 0) {
+        if (k > 0 && !isdigit(s[i])) {
             i++;
         }
 
@@ -109,7 +138,7 @@ void basic_gauss_elimination(double **arr, double *roots, int row, int column)
     int i, j, k;
 
     // eq_1 - eq_j * a1 / a_j
-    for (i = 0; i < row; i++) {    
+    for (i = 0; i < row - 1; i++) {    
         double pivot = arr[i][i];
 
         for (j = i + 1; j < row; j++) {
@@ -120,7 +149,20 @@ void basic_gauss_elimination(double **arr, double *roots, int row, int column)
             }
         }
 
+        sort(&arr, row, column);
+
         print_arr(arr, row, column);
+
+        int ready = is_ready(arr, row, column);
+
+        if (ready == 1) {
+            break;
+        }
+        else if (ready == -1) {
+            printf("Can't Solve.\nBye Bye!!!\n");
+
+            exit(0);
+        }
     }
 
     for (i = 0; i < row; i++) {
@@ -138,6 +180,8 @@ void basic_gauss_elimination(double **arr, double *roots, int row, int column)
             roots[i] -= roots[j] * arr[i][j];
         }
     }
+
+    print_arr(arr, row, column);
 }
 
 void print_arr(double **arr, int row, int column)
@@ -165,6 +209,82 @@ void print_roots(double *roots, int count)
     }
 
     printf("\n");
+}
+
+void sort(double ***arr, int row, int column)
+{
+    int i, j, var_count, is_ordered = 1;
+    double **temp = (double **) malloc(sizeof(double *) * row);
+    
+    struct item *counter = (struct item *) calloc(row, sizeof(struct item));
+
+    for (i = 0; i < row; i++) {
+        temp[i] = (double *) malloc(sizeof(double) * column);
+    }
+
+    for (i = 0; i < row; i++) {
+        var_count = 0;
+
+        for (j = 0; j < column - 1; j++) {
+            var_count += ((*arr)[i][j] != 0);
+        }
+
+        counter[i].var_count = var_count;
+        counter[i].index = i;
+    }
+
+    for (i = 1; i < row; i++) {
+        if (counter[i].var_count < counter[i - 1].var_count) {
+            is_ordered = 0;
+
+            break;
+        }
+    }
+
+    if (is_ordered) {
+        return;
+    }
+
+    qsort(counter, row, sizeof(struct item), compare);
+
+    for (i = 0; i < row; i++) {
+        for (j = 0; j < column; j++) {
+            temp[i][j] = (*arr)[counter[i].index][j];
+        }
+    }
+
+    *arr = temp;
+}
+
+int is_ready(double **arr, int row, int column)
+{
+    int i, j, var_count, ready = 1;
+    
+    struct item *counter = (struct item *) calloc(row, sizeof(struct item));
+
+    for (i = 0; i < row; i++) {
+        var_count = 0;
+
+        for (j = 0; j < column - 1; j++) {
+            var_count += arr[i][j] != 0;
+        }
+
+        counter[i].var_count = var_count;
+        counter[i].index = i;
+    }
+
+    for (i = 0; i < row; i++) {
+        if (counter[i].var_count != row - i) {
+            ready = 0;
+        }
+        if (counter[i].var_count < row - i) {
+            ready = -1;
+
+            break;
+        }
+    }
+
+    return ready;
 }
 
 int main()
@@ -199,8 +319,6 @@ int main()
     print_arr(arr, row, column);
 
     basic_gauss_elimination(arr, roots, row, column);
-
-    print_arr(arr, row, column);
 
     print_roots(roots, row);
 
