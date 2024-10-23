@@ -1,3 +1,5 @@
+// For 3x3 matrix only
+
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
@@ -5,12 +7,7 @@
 #include <stdbool.h>
 #include <math.h>
 
-void get_nums(char *s, int count, double *arr, int len);
-void gauss_jordan_elimination(double **arr, double *roots, int row, int column);
-void print_arr(double **arr, int row, int column);
-void print_roots(double *roots, int count);
-
-void get_nums(char *s, int count, double *arr, int len)
+void get_nums(char *s, int count, int *arr, int len)
 {
     int *sign = (int *) malloc(sizeof(int) * count);
     int i = 0, j = 0, k, is_dot = 0, dot = 0;
@@ -105,52 +102,14 @@ void get_nums(char *s, int count, double *arr, int len)
     free(sign);
 }
 
-void gauss_jordan_elimination(double **arr, double *roots, int row, int column)
-{
-    int i, j, k;
-
-    for (i = 0; i < row; i++) {
-        double pivot = arr[i][i];
-
-        if (pivot == 0) {
-            printf("Won't solve.\nBye Bye!!!\n");
-
-            exit(0);
-        }
-
-        for (j = 0; j < row; j++) {
-            if (j != i) {
-                double divisor = arr[j][i];
-                for (k = 0; k < column; k++) {
-                    arr[j][k] = arr[i][k] - arr[j][k] * pivot / divisor;
-                }
-            }
-        }
-
-        print_arr(arr, row, column);
-    }
-
-    for (i = 0; i < row; i++) {
-        double pivot = arr[i][i];
-
-        for (j = 0; j < column; j++) {
-            arr[i][j] /= pivot;
-        }
-
-        roots[i] = arr[i][column - 1];
-    }
-
-    print_arr(arr, row, column);
-}
-
-void print_arr(double **arr, int row, int column)
+void print_arr(int **arr, int row, int column)
 {
     int i, j;
 
     printf("arr:\n");
     for (i = 0; i < row; i++) {
         for (int j = 0; j < column; j++) {
-            printf("%g ", arr[i][j]);
+            printf("%d ", arr[i][j]);
         }
 
         printf("\n");
@@ -159,35 +118,70 @@ void print_arr(double **arr, int row, int column)
     printf("\n");
 }
 
-void print_roots(double *roots, int count)
+void print_roots(int *roots, int count)
 {
     int i;
 
+    printf("Roots: ");
     for (i = 0; i < count; i++) {
-        printf("%0.4lf ", roots[i]);
+        printf("%d ", roots[i]);
     }
 
     printf("\n");
+}
+
+int determinant(int **arr, int row, int column, int col_num)
+{
+    int i, j;
+    int **temp;
+
+    temp = (int **) malloc(sizeof(int *) * row);
+
+    for (i = 0; i < row; i++) {
+        temp[i] = (int *) malloc(sizeof(int) * (column - 1));
+    }
+
+    for (i = 0; i < row; i++) {
+        for (j = 0; j < column - 1; j++) {
+            temp[i][j] = arr[i][j];
+        }
+    }
+
+    if (col_num != -1) {
+        for (i = 0; i < row; i++) {
+            temp[i][col_num] = arr[i][column - 1];
+        }
+    }
+
+    int d = 0;
+    
+    for (i = 0; i < row; i++) {
+        d += temp[i][0] * (temp[(i + 1) % 3][1] * temp[(i + 2) % 3][2] - temp[(i + 1) % 3][2] * temp[(i + 2) % 3][1]);
+    }
+
+    print_arr(temp, row, column - 1);
+
+    return d;
 }
 
 int main()
 {
     char s[100];
     int row, column;
-    double **arr;
-    double *roots;
+    int **arr;
+    int *roots;
     int len, i, j;
 
     puts("Enter number of variables: ");
     scanf("%d ", &row);
 
-    arr = (double **) malloc(sizeof(double *) * row);
-    roots = (double *) calloc(row, sizeof(double));
+    arr = (int **) malloc(sizeof(int *) * row);
+    roots = (int *) calloc(row, sizeof(int));
 
     column = row + 1;
 
     for (i = 0; i < row; i++) {
-        arr[i] = (double *) malloc(sizeof(double) * column);
+        arr[i] = (int *) malloc(sizeof(int) * column);
     }
 
 
@@ -201,7 +195,18 @@ int main()
 
     print_arr(arr, row, column);
 
-    gauss_jordan_elimination(arr, roots, row, column);
+    int D, d[row];
+
+    D = determinant(arr, row, column, -1);
+    d[0] = determinant(arr, row, column, 0);
+    d[1] = determinant(arr, row, column, 1);
+    d[2] = determinant(arr, row, column, 2);
+
+    printf("%d %d %d %d\n", D, d[0], d[1], d[2]);
+
+    for (i = 0; i < row; i++) {
+        roots[i] = d[i] / D;
+    }
 
     print_roots(roots, row);
 
