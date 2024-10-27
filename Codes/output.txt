@@ -1,7 +1,7 @@
 Enter expression: [f = f(x)]
 Enter limits: [l r]
 Enter h: [h = val]
-f =  sin(4*x) / (1 + x)
-Trapezoidal = 0.2345
-Simpson's 1/3rd = 0.2345
-Simpson's 3/8th = 0.2344
+f =  1 / (1  + x)
+Trapezoidal = 0.6941
+Simpson's 1/3rd = 0.6932
+Simpson's 3/8th = 0.6849
