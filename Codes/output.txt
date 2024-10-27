@@ -1,11 +1,7 @@
-Enter expression:
-Enter h:
-Enter stop value:
-Enter initial value of y [y(x0) = val]:
-f =  3*x**2+1
-4.0
-x = 1.0 y = 2.0
-x = 1.25 y = 3.0
-x = 1.5 y = 4.421875
-x = 1.75 y = 6.359375
-x = 2.0 y = 8.90625
+Enter expression: [f = f(x)]
+Enter limits: [l r]
+Enter h: [h = val]
+f =  sin(4*x) / (1 + x)
+Trapezoidal = 0.2345
+Simpson's 1/3rd = 0.2345
+Simpson's 3/8th = 0.2344

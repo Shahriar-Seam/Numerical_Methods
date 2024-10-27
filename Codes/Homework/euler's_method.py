@@ -1,4 +1,5 @@
 import re
+from math import *
 
 def clean(f):
     f_new = ""
@@ -7,7 +8,7 @@ def clean(f):
         if f[i] == '^':
             f_new += "**"
         elif i > 0 and (f[i] == 'x' or f[i] == 'y'):
-            if len(f_new) > 0 and f_new[-1] not in '+-*/ ':
+            if len(f_new) > 0 and f_new[-1] not in '+-*/ (':
                 f_new += "*"
             f_new += f[i]
         else:
@@ -31,7 +32,7 @@ print(f"f = {f}")
 print(eval(f))
 
 while x < val:
-    print("x =", x, "y =", y)
+    # print("x =", x, "y =", y)
     y = y + h * eval(f)
     x += h
     
