@@ -1,7 +1,1 @@
-Enter expression: [f = f(x)]
-Enter limits: [l r]
-Enter h: [h = val]
-f =  1 / (1  + x)
-Trapezoidal = 0.6941
-Simpson's 1/3rd = 0.6932
-Simpson's 3/8th = 0.6849
+y(0.4) = 0.021360090381533078
