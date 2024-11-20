@@ -131,7 +131,7 @@ def evaluate_postfix(postfix, x = 0, y = 0):
 def derivative(f, x, h = 1e-6):
     return (evaluate_postfix(f, x + h) - evaluate_postfix(f, x)) / h
 
-# s = clean(input())
+# s = input()
 
 # print(s)
 
@@ -139,4 +139,4 @@ def derivative(f, x, h = 1e-6):
 
 # print(''.join(str(i) for i in post))
 
-# print(evaluate_postfix(post, x = 1, y = 1))
+# print(evaluate_postfix(post, x = 3, y = 1))
