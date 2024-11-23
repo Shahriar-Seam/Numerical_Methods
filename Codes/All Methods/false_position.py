@@ -1,20 +1,17 @@
-from algebraic_expression_evaluator import infix_to_postfix as itp, evaluate_postfix as ep
+from Common.algebraic_expression_evaluator import infix_to_postfix as itp, evaluate_postfix as ep
 
 f = input()
 
 f = itp(f)
 
-print(' '.join(str(i) for i in f))
-
-x1 = -2
-x2 = -1
+x1, x2 = map(float, input().split())
 x0 = None
 
 while abs(x1 - x2) > 1e-6:
-    x0 = (x1 + x2) / 2
-    
     f1 = ep(f, x1)
     f2 = ep(f, x2)
+    
+    x0 = x1 - (f1 * (x2 - x1)) / (f2 - f1)
     f0 = ep(f, x0)
     
     if f0 == 0:
@@ -26,5 +23,5 @@ while abs(x1 - x2) > 1e-6:
     else:
         print(f"The root isn't inside {x1}, {x2}")
         break
-    
+
 print(f"Root = {x0:.6}")
