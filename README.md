@@ -133,6 +133,7 @@ Enter number of variables:
 x + 3y + z = 8
 x + y + 5z = 10
 ```
+**Note:** The linear equation solvers require specific formatting. Ensure proper spacing and use `x`, `y`, `z` as variables.
 
 ### Numerical Integration
 ```bash
@@ -143,6 +144,12 @@ python3 integration.py
 x^2 + 1
 0.0 2.0
 0.5
+```
+**Output:**
+```
+I = 4.75000     (Trapezoidal)
+I = 4.6667      (Simpson's 1/3)
+I = 4.1719      (Simpson's 3/8)
 ```
 
 ### Differential Equations - Runge-Kutta
@@ -155,6 +162,10 @@ x + y
 y(0) = 1
 h = 0.1
 stop = 1.0
+```
+**Output:**
+```
+y(1.1) = 3.9083
 ```
 
 ## 📝 Input Formats
@@ -206,6 +217,11 @@ For matrix operations, enter coefficients row by row including the constant term
 - Configurable tolerance levels (typically 1e-6)
 - Double precision arithmetic
 - Proper rounding and formatting
+
+### Known Limitations
+- Some linear equation solvers may require specific input formatting
+- Large condition numbers may cause numerical instability
+- Complex expressions should be simplified for better parsing
 
 ## 📊 Performance Notes
 
